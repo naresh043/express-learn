@@ -1,14 +1,18 @@
 const express = require("express");
-const dbConnect=require("./config/db.js")
-const dotenv=require("dotenv").config();
-const app = express();
+const dbConnect = require("./config/db.js");
+require("dotenv").config();
 
+const authRoutes = require("./routes/authRouters");
+
+const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //db coonection
-dbConnect()
+dbConnect();
+app.get("/", (req, res) => {
+  res.send("this is the naresh ");
+});
 
-const authRoutes = require("./routes/authRouters");
 app.use(`/api/v1/auth`, authRoutes);
 
 app.listen(process.env.PORT, () => {
