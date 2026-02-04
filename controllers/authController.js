@@ -3,13 +3,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res) => {
   try {
-    const { name, age, password } = req.body;
+    const { name, age, role, password } = req.body;
     const hashedPassword = await bcrypt.hashSync(password, 12);
     const exitedUser = await UserModel.findOne({ name });
     if (exitedUser) {
       res.send("user already existed");
     }
-    const user = await UserModel({ name, age, password: hashedPassword });
+    const user = await UserModel({ name, age, role, password: hashedPassword });
     await user.save();
     res.status(200).json({ message: "user successfully signUp", user: user });
   } catch (error) {
@@ -30,11 +30,12 @@ const login = async (req, res) => {
     }
     const token = await jwt.sign(
       { _id: user._id },
-      process.env.JWT_SECRATE_KEY,
+      process.env.JWT_SECRET_KEY,
       { expiresIn: "1h" },
     );
     res.status(200).json({ message: "login successful", token });
   } catch (error) {
+    console.log(error);
     res.send(error);
   }
 };
@@ -72,4 +73,16 @@ const profileEdit = async (req, res) => {
     });
   }
 };
-module.exports = { signUp, login, me, profileEdit };
+
+const getAllUsers = async (req, res) => {
+  try {
+    const allUser = await UserModel.find();
+    res
+      .status(200)
+      .json({ message: "fecthed users succesfully !", user: allUser });
+  } catch (error) {
+    console.log(error);
+    res.send(error.message);
+  }
+};
+module.exports = { signUp, login, me, profileEdit, getAllUsers };

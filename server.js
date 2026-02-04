@@ -2,7 +2,7 @@ const express = require("express");
 const dbConnect = require("./config/db.js");
 require("dotenv").config();
 
-const authRoutes = require("./routes/authRouters");
+const authRoutes = require("./routes/authRouters.js");
 
 const app = express();
 app.use(express.json());
